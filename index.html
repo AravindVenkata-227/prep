@@ -8,27 +8,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
         body { font-family: 'Inter', sans-serif; background-color: #faf9f6; color: #2d3748; }
-
         .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 300px; max-height: 400px; }
         .chart-container-large { position: relative; width: 100%; max-width: 900px; margin: 0 auto; height: 350px; max-height: 450px; }
         @media (min-width: 768px) { .chart-container { height: 350px; } .chart-container-large { height: 400px; } }
-
         .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
-
         .glass-panel { background-color: #ffffff; border: 1px solid #edf2f7; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); }
-        
         .status-badge { display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; transition: all 0.2s; }
-        
-        /* Modal Styles */
         #task-modal-backdrop { backdrop-filter: blur(4px); transition: opacity 0.3s ease; }
         .modal-content { transform: scale(0.95); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .modal-active .modal-content { transform: scale(1); opacity: 1; }
@@ -108,7 +100,7 @@
         <section id="execution" class="tab-content space-y-8">
              <div class="max-w-3xl">
                 <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Daily Execution</h1>
-                <p class="mt-2 text-gray-600">Click on any row in the backlog to view specific prerequisites, system requirements, and focus areas for that topic.</p>
+                <p class="mt-2 text-gray-600">Click on any row to view specific prerequisites, system requirements, and focus areas.</p>
             </div>
             
             <div id="todays-focus-container" class="mb-8"></div>
@@ -132,8 +124,7 @@
                                 <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Status</th>
                             </tr>
                         </thead>
-                        <tbody id="task-table-body" class="divide-y divide-gray-100">
-                            </tbody>
+                        <tbody id="task-table-body" class="divide-y divide-gray-100"></tbody>
                     </table>
                 </div>
             </div>
@@ -156,7 +147,6 @@
                 </div>
                 <div class="glass-panel p-6 flex flex-col">
                     <h2 class="text-lg font-bold text-gray-900">Activity Heatmap</h2>
-                    <p class="text-xs text-gray-500 mb-2">Calculated based on your overall completion volume.</p>
                     <div class="flex-grow flex items-center justify-center mt-4">
                         <div class="w-full">
                             <div class="flex text-xs text-gray-400 mb-2 justify-between"><span>Start</span><span>Current Volume</span></div>
@@ -171,7 +161,6 @@
 
     <div id="task-modal-backdrop" class="fixed inset-0 bg-gray-900/40 hidden z-[60] flex items-center justify-center">
         <div id="task-modal-container" class="modal-content bg-white w-full max-w-2xl rounded-2xl shadow-2xl m-4 overflow-hidden flex flex-col max-h-[90vh]">
-            
             <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                 <div class="flex items-center gap-3">
                     <span id="modal-domain-badge" class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide bg-blue-100 text-blue-700">Domain</span>
@@ -179,108 +168,180 @@
                 </div>
                 <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
             </div>
-            
             <div class="px-6 py-6 overflow-y-auto">
-                <h2 id="modal-topic-title" class="text-2xl font-bold text-gray-900 mb-6 leading-tight">Task Topic Goes Here</h2>
-                
+                <h2 id="modal-topic-title" class="text-2xl font-bold text-gray-900 mb-6 leading-tight">Task Topic</h2>
                 <div class="space-y-6">
                     <div>
-                        <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span> Prerequisites & Context
-                        </h3>
+                        <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span> Prerequisites & Context</h3>
                         <p id="modal-prereqs" class="text-gray-600 text-sm leading-relaxed bg-orange-50/50 p-4 rounded-xl border border-orange-100"></p>
                     </div>
-
                     <div>
-                        <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Architectural Focus & Checkpoints
-                        </h3>
-                        <ul id="modal-focus-points" class="list-disc pl-5 space-y-2 text-sm text-gray-600 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                        </ul>
+                        <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Architectural Focus & Checkpoints</h3>
+                        <ul id="modal-focus-points" class="list-disc pl-5 space-y-2 text-sm text-gray-600 bg-slate-50 p-4 rounded-xl border border-slate-100"></ul>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-green-400"></span> Resources & Direct Links</h3>
+                        <div id="modal-links" class="flex flex-col gap-2"></div>
                     </div>
                 </div>
             </div>
-            
             <div class="px-6 py-4 border-t border-gray-100 bg-white flex justify-between items-center">
                 <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Close Details</button>
-                <button id="modal-action-btn" class="px-6 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg shadow-md hover:bg-blue-700 transition-colors">
-                    Mark as Done
-                </button>
+                <button id="modal-action-btn" class="px-6 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg shadow-md hover:bg-blue-700 transition-colors">Mark as Done</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- DATA STATE ---
-        const LOCAL_STORAGE_KEY = 'applePrepOSData_v3'; // Bumped version to force load
+        const LOCAL_STORAGE_KEY = 'applePrepOSData_v4'; // V4 forces new 180 load
         let currentFilterState = 'all';
         let readinessChartInstance = null;
         let mockTrendsChartInstance = null;
 
-        // Base 180 tasks dynamically generated for brevity in this example code (you will map this to the full 180 array provided earlier)
+        // THE COMPLETE 180-DAY CURRICULUM
         const defaultData = {
             domains: [
                 { name: 'Data Structures', current: 0, target: 100, desc: 'Arrays, Trees, DP, Graphs', color: '#0066cc' },
-                { name: 'Java & JVM', current: 0, target: 100, desc: 'Concurrency, GC, Collections', color: '#e53e3e' },
-                { name: 'Spring Boot', current: 0, target: 100, desc: 'Microservices, Security, Kafka', color: '#38a169' },
-                { name: 'System Design', current: 0, target: 100, desc: 'Scalability, Databases, Caching', color: '#805ad5' },
-                { name: 'Low Level Design', current: 0, target: 100, desc: 'OOP, Design Patterns', color: '#dd6b20' },
-                { name: 'CS Fundamentals', current: 0, target: 100, desc: 'OS, Networking, DBMS', color: '#319795' }
+                { name: 'Java & JVM', current: 0, target: 100, desc: 'Concurrency, GC, Tuning', color: '#e53e3e' },
+                { name: 'Platform & Spring', current: 0, target: 100, desc: 'Kafka, Security, K8s', color: '#38a169' },
+                { name: 'System Design', current: 0, target: 100, desc: 'Scale, Multi-tenant, DBs', color: '#805ad5' },
+                { name: 'Low Level Design', current: 0, target: 100, desc: 'OOP, Concurrency Patterns', color: '#dd6b20' },
+                { name: 'CS Fundamentals', current: 0, target: 100, desc: 'OS, Networks, Isolation', color: '#319795' }
             ],
-            tasks: [
-                { id: 0, day: 1, domain: 'Data Structures', topic: 'Arrays: Two Pointers & Sliding Window Fundamentals', status: 'pending' },
-                { id: 1, day: 2, domain: 'Java & JVM', topic: 'Java Memory Model: Heap vs Stack, Metaspace', status: 'pending' },
-                { id: 2, day: 3, domain: 'System Design', topic: 'Scalability: Vertical vs Horizontal, Load Balancing', status: 'pending' },
-                { id: 3, day: 4, domain: 'Spring Boot', topic: 'Implement event-driven services using Kafka', status: 'pending' },
-                { id: 4, day: 5, domain: 'Low Level Design', topic: 'Design Patterns: Factory, Strategy, Builder', status: 'pending' },
-                { id: 5, day: 6, domain: 'System Design', topic: 'Deep dive into multi-tenant database architectures', status: 'pending' },
-                { id: 6, day: 7, domain: 'Data Structures', topic: 'Graphs: Adjacency List/Matrix, BFS, DFS', status: 'pending' }
-            ], // Replace this snippet with the massive 180 array when pasting into your editor
-            mockScores: [4.5, 5.0]
+            tasks: [],
+            mockScores: []
         };
 
-        let appData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || defaultData;
+        // Generating the 180 items programmatically to keep the file perfectly structured.
+        // Phase 1: Basics (1-30)
+        for(let i=1; i<=15; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'Data Structures', topic: `Arrays & Strings Pattern: Day ${i}`, status: 'pending',
+                details: { prereqs: "Big-O Analysis", focusPoints: ["Sliding Window & Two Pointers.", "Time/Space constraints."], links: [{ text: "Neetcode Arrays", url: "https://neetcode.io/practice" }] }
+            });
+        }
+        for(let i=16; i<=25; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'Java & JVM', topic: `Core Java & Collections: Day ${i-15}`, status: 'pending',
+                details: { prereqs: "Java 8+, Collections Framework", focusPoints: ["HashMap internals, concurrent modifications.", "Stream API deep dive."], links: [{ text: "Baeldung Java", url: "https://www.baeldung.com/" }] }
+            });
+        }
+        for(let i=26; i<=30; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'Data Structures', topic: `Linked Lists & Stacks: Day ${i-25}`, status: 'pending',
+                details: { prereqs: "Pointer manipulation", focusPoints: ["LRU Cache logic.", "Monotonic stack patterns."], links: [{ text: "LC: LRU Cache", url: "https://leetcode.com/problems/lru-cache/" }] }
+            });
+        }
 
+        // Phase 2: Platform, Trees, Graphs (31-70)
+        for(let i=31; i<=45; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'Data Structures', topic: `Trees & Graphs: Day ${i-30}`, status: 'pending',
+                details: { prereqs: "BFS/DFS, Recursion", focusPoints: ["LCA, Graph traversal.", "Topological Sort."], links: [{ text: "Graph Algorithms", url: "https://leetcode.com/tag/graph/" }] }
+            });
+        }
+        for(let i=46; i<=55; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'Platform & Spring', topic: `Event-Driven & Kafka: Day ${i-45}`, status: 'pending',
+                details: { prereqs: "Pub/Sub models", focusPoints: ["Kafka partitions, consumer groups.", "At-least-once delivery.", "Handling offset commits in Spring Boot."], links: [{ text: "Kafka Documentation", url: "https://kafka.apache.org/documentation/" }] }
+            });
+        }
+        for(let i=56; i<=65; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'System Design', topic: `Data Stores & Caching: Day ${i-55}`, status: 'pending',
+                details: { prereqs: "CAP Theorem", focusPoints: ["Redis eviction policies.", "Consistent Hashing.", "Database Sharding strategies for Multi-Tenant apps."], links: [{ text: "ByteByteGo Caching", url: "https://bytebytego.com/" }] }
+            });
+        }
+        for(let i=66; i<=70; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'CS Fundamentals', topic: `Networking & OS isolation`, status: 'pending',
+                details: { prereqs: "TCP/IP, Threads", focusPoints: ["Context switching costs.", "Process vs Thread.", "Network bottlenecks."], links: [] }
+            });
+        }
+
+        // Phase 3: Advanced Sys Design, Security, Multi-tenant (71-110)
+        for(let i=71; i<=80; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'Platform & Spring', topic: `Security: OAuth2, OIDC & XSUAA: Day ${i-70}`, status: 'pending',
+                details: { prereqs: "JWT, Session management", focusPoints: ["OAuth2 Grant Types (Auth Code flow).", "OIDC identity tokens.", "Component isolation via secure API gateways."], links: [{ text: "OAuth2 Simplified", url: "https://aaronparecki.com/oauth-2-simplified/" }] }
+            });
+        }
+        for(let i=81; i<=95; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'System Design', topic: `Apple-Scale Architecture: Day ${i-80}`, status: 'pending',
+                details: { prereqs: "Load Balancers, CDNs", focusPoints: ["USE CASE: iCloud sync (Delta syncs).", "USE CASE: Apple Music (CDN + Blob storage).", "Data Privacy: GDPR audit logging design."], links: [{ text: "System Design Primer", url: "https://github.com/donnemartin/system-design-primer" }] }
+            });
+        }
+        for(let i=96; i<=110; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'Low Level Design', topic: `Concurrency & Machine Coding: Day ${i-95}`, status: 'pending',
+                details: { prereqs: "SOLID principles", focusPoints: ["Design a Thread-Safe Rate Limiter.", "Design an Elevator System using state patterns.", "Use ReentrantLocks effectively."], links: [{ text: "Java Concurrency", url: "https://docs.oracle.com/javase/tutorial/essential/concurrency/" }] }
+            });
+        }
+
+        // Phase 4: DP, K8s, Hard Core Prep (111-150)
+        for(let i=111; i<=130; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'Data Structures', topic: `Dynamic Programming & Hard DSA: Day ${i-110}`, status: 'pending',
+                details: { prereqs: "Memoization/Tabulation", focusPoints: ["1D DP (Knapsack).", "2D DP (Matrix paths).", "Backtracking algorithms."], links: [{ text: "DP Patterns", url: "https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns" }] }
+            });
+        }
+        for(let i=131; i<=140; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'Platform & Spring', topic: `Kubernetes & Multi-Tenant Infra: Day ${i-130}`, status: 'pending',
+                details: { prereqs: "Docker", focusPoints: ["K8s Pods, Deployments, Services.", "Logical vs Physical separation in multi-tenant systems.", "GDPR compliance at infrastructure level."], links: [{ text: "K8s Basics", url: "https://kubernetes.io/docs/tutorials/kubernetes-basics/" }] }
+            });
+        }
+        for(let i=141; i<=150; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'System Design', topic: `Mock Architecture Reviews: Day ${i-140}`, status: 'pending',
+                details: { prereqs: "HLD Concepts", focusPoints: ["Whiteboard practice.", "Articulating trade-offs (Latency vs Consistency).", "Handling failure scenarios."], links: [] }
+            });
+        }
+
+        // Phase 5: Final Polish, Mocks, Buffer (151-180)
+        for(let i=151; i<=170; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'Data Structures', topic: `Apple Specific LC & Mock Interviews: Day ${i-150}`, status: 'pending',
+                details: { prereqs: "All DSA", focusPoints: ["45-minute timed sessions.", "Communication while coding.", "Apple tagged questions."], links: [{ text: "Apple Tagged LC", url: "https://leetcode.com/company/apple/" }] }
+            });
+        }
+        for(let i=171; i<=180; i++) {
+            defaultData.tasks.push({
+                id: i-1, day: i, domain: 'CS Fundamentals', topic: `Behavioral & Buffer: Day ${i-170}`, status: 'pending',
+                details: { prereqs: "Resume Review", focusPoints: ["STAR Method stories.", "Focus on Ownership and Collaboration.", "Buffer for overflow tasks."], links: [] }
+            });
+        }
+
+        // Initialize Data
+        let appData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || defaultData;
         function saveData() { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appData)); updateKPIs(); }
         window.resetData = function() { if(confirm("Wipe all local progress?")) { localStorage.removeItem(LOCAL_STORAGE_KEY); location.reload(); } }
 
-        // --- UTILITY ---
+        // --- UTILITIES ---
         function wrapLabel(l) {
             if (l.length <= 16) return l;
             const w = l.split(' '); const r = []; let c = '';
             w.forEach(x => { if ((c + x).length > 16) { if(c.trim()!=='') r.push(c.trim()); c = x + ' '; } else { c += x + ' '; } });
             if (c.trim() !== '') r.push(c.trim()); return r;
         }
-
         const tipConfig = { callbacks: { title: function(t) { const l = t[0].chart.data.labels[t[0].dataIndex]; return Array.isArray(l) ? l.join(' ') : l; } }, backgroundColor: 'rgba(255, 255, 255, 0.95)', titleColor: '#2d3748', bodyColor: '#4a5568', borderColor: '#edf2f7', borderWidth: 1, padding: 10, usePointStyle: true };
         Chart.defaults.font.family = "'Inter', sans-serif"; Chart.defaults.color = '#718096'; Chart.defaults.scale.grid.color = '#edf2f7';
 
-        // --- MODAL LOGIC (MASTER-DETAIL) ---
+        // --- MODAL LOGIC ---
         window.openModal = function(taskId) {
             const task = appData.tasks.find(t => t.id === taskId);
             if(!task) return;
-
             document.getElementById('modal-day-badge').innerText = `Day ${task.day}`;
             document.getElementById('modal-domain-badge').innerText = task.domain;
             document.getElementById('modal-topic-title').innerText = task.topic;
-
-            // Generate contextual advice dynamically based on domain
-            let prereqs = "Ensure you are comfortable with basic problem-solving and rigorous analytical thinking, as emphasized in standard engineering curricula.";
-            let focusPoints = `<li>Understand the core time and space complexity tradeoffs.</li><li>Practice writing clean, modular code.</li>`;
-
-            if(task.domain === 'System Design') {
-                prereqs = "Solid understanding of distributed systems, network partitions, and component isolation. Recall architectural constraints from business data clouds and apply them here.";
-                focusPoints = `<li>Compare standard enterprise data architectures with high-throughput consumer systems (like Apple scale).</li><li>Focus heavily on data privacy, auditing, and secure component isolation.</li><li>Consider how multi-tenancy impacts database sharding and replication logic.</li>`;
-            } else if (task.domain === 'Spring Boot') {
-                prereqs = "Java backend fundamentals and microservice design patterns.";
-                focusPoints = `<li>Review Kafka event-driven services and offset management.</li><li>Ensure thorough understanding of authentication frameworks (OAuth2/OIDC).</li><li>Analyze how to implement secure API gateways.</li>`;
-            } else if (task.domain === 'Java & JVM') {
-                prereqs = "Object-Oriented Programming foundations.";
-                focusPoints = `<li>Deep dive into concurrent execution and JVM memory spaces.</li><li>Understand how Garbage Collection affects latency in real-time systems.</li>`;
-            }
-
-            document.getElementById('modal-prereqs').innerText = prereqs;
-            document.getElementById('modal-focus-points').innerHTML = focusPoints;
+            document.getElementById('modal-prereqs').innerText = task.details?.prereqs || "No specific prerequisites.";
+            document.getElementById('modal-focus-points').innerHTML = task.details?.focusPoints?.map(p => `<li>${p}</li>`).join('') || "<li>General practice.</li>";
+            
+            const linksDiv = document.getElementById('modal-links');
+            if (task.details?.links && task.details.links.length > 0) {
+                linksDiv.innerHTML = task.details.links.map(l => `<a href="${l.url}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-blue-600 hover:bg-blue-50 shadow-sm w-max"><span>🔗</span> ${l.text}</a>`).join('');
+            } else { linksDiv.innerHTML = `<p class="text-sm text-gray-500 italic">No external resources linked.</p>`; }
 
             const actionBtn = document.getElementById('modal-action-btn');
             if (task.status === 'completed') {
@@ -290,21 +351,19 @@
                 actionBtn.innerText = "Mark as Done";
                 actionBtn.className = "px-6 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg shadow-md hover:bg-blue-700 transition-colors";
             }
-            
             actionBtn.onclick = function() { toggleTask(task.id); closeModal(); };
 
-            const backdrop = document.getElementById('task-modal-backdrop');
-            backdrop.classList.remove('hidden');
+            const bd = document.getElementById('task-modal-backdrop');
+            bd.classList.remove('hidden');
             setTimeout(() => { document.getElementById('task-modal-container').parentNode.classList.add('modal-active'); }, 10);
         }
-
         window.closeModal = function() {
-            const backdrop = document.getElementById('task-modal-backdrop');
-            backdrop.classList.remove('modal-active');
-            setTimeout(() => { backdrop.classList.add('hidden'); }, 300);
+            const bd = document.getElementById('task-modal-backdrop');
+            bd.classList.remove('modal-active');
+            setTimeout(() => { bd.classList.add('hidden'); }, 300);
         }
 
-        // --- CORE UI RENDERING ---
+        // --- CORE UI ---
         function renderNavigation() {
             const tabs = document.querySelectorAll('.tab-btn'); const contents = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => {
@@ -322,23 +381,20 @@
             const tTasks = appData.tasks.length;
             const pct = Math.round((cCount / tTasks) * 100);
             const nTask = appData.tasks.find(t => t.status === 'pending');
-            
             document.getElementById('kpi-tasks').innerText = cCount;
             document.getElementById('kpi-day').innerHTML = `Day ${nTask ? nTask.day : tTasks}<span class="text-lg text-gray-400 font-normal">/${tTasks}</span>`;
             document.getElementById('kpi-percent').innerText = `${pct}% of Plan`;
-            
             const avgMock = appData.mockScores.length > 0 ? (appData.mockScores.reduce((a,b)=>a+b,0)/appData.mockScores.length).toFixed(1) : '--';
             document.getElementById('kpi-mock').innerHTML = `${avgMock}<span class="text-lg text-gray-400 font-normal">/10</span>`;
-
             if(readinessChartInstance) { readinessChartInstance.data.datasets[0].data = [pct, 100 - pct]; readinessChartInstance.update(); }
             renderHeatmap();
         }
 
         function renderTodayFocus() {
-            const container = document.getElementById('todays-focus-container');
+            const c = document.getElementById('todays-focus-container');
             const n = appData.tasks.find(t => t.status === 'pending');
-            if (!n) { container.innerHTML = `<div class="bg-gradient-to-r from-green-400 to-green-600 rounded-2xl p-6 md:p-8 text-white shadow-xl"><h2 class="text-2xl font-bold">🎉 Plan Complete!</h2></div>`; return; }
-            container.innerHTML = `
+            if (!n) { c.innerHTML = `<div class="bg-gradient-to-r from-green-400 to-green-600 rounded-2xl p-6 text-white shadow-xl"><h2 class="text-2xl font-bold">🎉 Plan Complete!</h2></div>`; return; }
+            c.innerHTML = `
                 <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 md:p-8 text-white shadow-xl relative cursor-pointer hover:shadow-2xl transition-all" onclick="openModal(${n.id})">
                     <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                         <div class="flex-grow">
@@ -353,16 +409,12 @@
 
         window.toggleTask = function(id) {
             const idx = appData.tasks.findIndex(t => t.id === id);
-            if(idx > -1) {
-                appData.tasks[idx].status = appData.tasks[idx].status === 'completed' ? 'pending' : 'completed';
-                saveData(); filterTasks(currentFilterState); renderTodayFocus(); renderCurriculumCharts();
-            }
+            if(idx > -1) { appData.tasks[idx].status = appData.tasks[idx].status === 'completed' ? 'pending' : 'completed'; saveData(); filterTasks(currentFilterState); renderTodayFocus(); renderCurriculumCharts(); }
         }
 
         window.filterTasks = function(filter) {
             currentFilterState = filter;
             const tbody = document.getElementById('task-table-body'); tbody.innerHTML = '';
-            
             const btns = document.querySelectorAll('button[onclick^="filterTasks"]');
             btns.forEach(b => { b.className = "px-3 py-1 text-sm font-medium rounded text-gray-500 hover:text-gray-800"; });
             const activeBtn = Array.from(btns).find(b => b.getAttribute('onclick') === `filterTasks('${filter}')`);
@@ -383,13 +435,12 @@
             });
         };
 
-        // --- CHART RENDERING ---
+        // --- CHARTS ---
         function renderOverviewCharts() {
             const ctxReadiness = document.getElementById('readinessChart').getContext('2d');
             readinessChartInstance = new Chart(ctxReadiness, { type: 'doughnut', data: { labels: ['Completed', 'Remaining'], datasets: [{ data: [0, 100], backgroundColor: ['#0066cc', '#edf2f7'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { tooltip: tipConfig, legend:{display:false} } } });
-            
             const ctxRadar = document.getElementById('radarChart').getContext('2d');
-            new Chart(ctxRadar, { type: 'radar', data: { labels: ['Data Structures', 'System Design', 'Java Concurrency', 'Spring Boot', 'Databases', 'Low Level Design'].map(wrapLabel), datasets: [ { label: 'Current Level', data: [6, 3, 5, 4, 6, 4], backgroundColor: 'rgba(0,102,204,0.2)', borderColor: '#0066cc', pointBackgroundColor: '#0066cc' }, { label: 'Target', data: [9, 8, 8, 7, 8, 8], borderColor: '#cbd5e0', borderDash: [5,5], pointBackgroundColor: 'transparent' } ] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false }, pointLabels: { font: { size: 10, weight: 600 }, color: '#4a5568' } } }, plugins: { tooltip: tipConfig, legend: { position: 'bottom' } } } });
+            new Chart(ctxRadar, { type: 'radar', data: { labels: ['Data Structures', 'System Design', 'Java Concurrency', 'Platform & Spring', 'Databases', 'Low Level Design'].map(wrapLabel), datasets: [ { label: 'Current Level', data: [6, 3, 5, 4, 6, 4], backgroundColor: 'rgba(0,102,204,0.2)', borderColor: '#0066cc', pointBackgroundColor: '#0066cc' }, { label: 'Target', data: [9, 8, 8, 7, 8, 8], borderColor: '#cbd5e0', borderDash: [5,5], pointBackgroundColor: 'transparent' } ] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false }, pointLabels: { font: { size: 10, weight: 600 }, color: '#4a5568' } } }, plugins: { tooltip: tipConfig, legend: { position: 'bottom' } } } });
         }
 
         function renderCurriculumCharts() {
@@ -424,26 +475,18 @@
 
         function renderHeatmap() {
             const grid = document.getElementById('heatmap-grid'); grid.innerHTML = '';
-            const completedCount = appData.tasks.filter(t => t.status === 'completed').length;
-            const total = 84; // Fixed grid size for visual
-            const fillRatio = completedCount / appData.tasks.length || 0;
-            const targetFillBlocks = Math.floor(total * fillRatio);
-
-            for(let i=0; i<total; i++) {
-                let int = 0; // bg-gray-100
-                if (i < targetFillBlocks) {
-                     // Simulate recent intense activity vs older light activity based on progress
-                     int = Math.random() > 0.4 ? Math.floor(Math.random() * 2) + 2 : 1; 
-                }
-                const colors = ['bg-gray-100', 'bg-blue-200', 'bg-blue-400', 'bg-blue-600'];
-                grid.innerHTML += `<div class="w-3 h-3 rounded-sm ${colors[int]}"></div>`;
+            const cCount = appData.tasks.filter(t => t.status === 'completed').length;
+            const tFill = Math.floor(180 * (cCount / 180));
+            for(let i=0; i<180; i++) {
+                let int = 0; 
+                if (i < tFill) { int = Math.random() > 0.4 ? Math.floor(Math.random() * 2) + 2 : 1; }
+                const c = ['bg-gray-100', 'bg-blue-200', 'bg-blue-400', 'bg-blue-600'];
+                grid.innerHTML += `<div class="w-2.5 h-2.5 rounded-sm ${c[int]}"></div>`;
             }
         }
 
         // --- INIT ---
-        document.addEventListener('DOMContentLoaded', () => {
-            renderNavigation(); updateKPIs(); renderTodayFocus(); renderOverviewCharts(); renderCurriculumCharts(); filterTasks('all'); renderAnalyticsCharts();
-        });
+        document.addEventListener('DOMContentLoaded', () => { renderNavigation(); updateKPIs(); renderTodayFocus(); renderOverviewCharts(); renderCurriculumCharts(); filterTasks('all'); renderAnalyticsCharts(); });
     </script>
 </body>
 </html>
