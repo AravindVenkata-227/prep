@@ -99,7 +99,6 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
 
-        <!-- OVERVIEW SECTION -->
         <section id="overview" class="tab-content active space-y-8">
             <div class="max-w-3xl flex justify-between items-start">
                 <div>
@@ -115,9 +114,9 @@
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="glass-panel p-6">
-                    <div class="text-sm font-medium text-gray-500 mb-1">Time Elapsed</div>
-                    <div class="text-3xl font-bold text-gray-900">Day 45<span class="text-lg text-gray-400 font-normal">/180</span></div>
-                    <div class="mt-2 text-xs font-semibold text-blue-600 bg-blue-50 inline-block px-2 py-1 rounded">25% of Plan</div>
+                    <div class="text-sm font-medium text-gray-500 mb-1">Current Day</div>
+                    <div class="text-3xl font-bold text-gray-900" id="kpi-day">Day 1<span class="text-lg text-gray-400 font-normal">/180</span></div>
+                    <div class="mt-2 text-xs font-semibold text-blue-600 bg-blue-50 inline-block px-2 py-1 rounded" id="kpi-percent">0% of Plan</div>
                 </div>
                 <div class="glass-panel p-6">
                     <div class="text-sm font-medium text-gray-500 mb-1">Tasks Completed</div>
@@ -126,13 +125,13 @@
                 </div>
                 <div class="glass-panel p-6">
                     <div class="text-sm font-medium text-gray-500 mb-1">Current Streak</div>
-                    <div class="text-3xl font-bold text-gray-900">12 <span class="text-xl">&#128293;</span></div>
-                    <div class="mt-2 text-xs font-semibold text-orange-600 bg-orange-50 inline-block px-2 py-1 rounded">Best: 24 Days</div>
+                    <div class="text-3xl font-bold text-gray-900">0 <span class="text-xl">&#128293;</span></div>
+                    <div class="mt-2 text-xs font-semibold text-orange-600 bg-orange-50 inline-block px-2 py-1 rounded">Stay Consistent</div>
                 </div>
                 <div class="glass-panel p-6">
                     <div class="text-sm font-medium text-gray-500 mb-1">Avg Confidence</div>
-                    <div class="text-3xl font-bold text-gray-900">6.8<span class="text-lg text-gray-400 font-normal">/10</span></div>
-                    <div class="mt-2 text-xs font-semibold text-gray-600 bg-gray-100 inline-block px-2 py-1 rounded">Needs Review: DP</div>
+                    <div class="text-3xl font-bold text-gray-900">--<span class="text-lg text-gray-400 font-normal">/10</span></div>
+                    <div class="mt-2 text-xs font-semibold text-gray-600 bg-gray-100 inline-block px-2 py-1 rounded">Track below</div>
                 </div>
             </div>
 
@@ -154,7 +153,6 @@
             </div>
         </section>
 
-        <!-- CURRICULUM EXPLORER SECTION -->
         <section id="curriculum" class="tab-content space-y-8">
             <div class="max-w-3xl">
                 <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Curriculum Explorer</h1>
@@ -173,18 +171,20 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="domain-cards-container"></div>
         </section>
 
-        <!-- DAILY EXECUTION SECTION -->
         <section id="execution" class="tab-content space-y-8">
              <div class="max-w-3xl">
                 <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Daily Execution</h1>
                 <p class="mt-2 text-gray-600 leading-relaxed">
-                    Click the status badge to toggle tasks between Pending and Done. Your progress is automatically saved to your browser.
+                    Focus strictly on the current day's target below. Once finished, click "Mark as Done" to advance the tracker to the next day automatically.
                 </p>
             </div>
 
+            <div id="todays-focus-container" class="mb-8">
+                </div>
+
             <div class="glass-panel p-6 overflow-hidden">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                    <h2 class="text-lg font-bold text-gray-900">Task Backlog</h2>
+                    <h2 class="text-lg font-bold text-gray-900">Complete Master Backlog</h2>
                     <div class="flex space-x-2 bg-gray-100 p-1 rounded-lg">
                         <button onclick="filterTasks('all')" class="px-3 py-1 text-sm font-medium rounded bg-white shadow-sm text-gray-800">All</button>
                         <button onclick="filterTasks('pending')" class="px-3 py-1 text-sm font-medium rounded text-gray-500 hover:text-gray-800">Pending</button>
@@ -199,18 +199,16 @@
                                 <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-tl-lg">Day</th>
                                 <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Domain</th>
                                 <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Topic / Task</th>
-                                <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status (Click to Change)</th>
+                                <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                             </tr>
                         </thead>
                         <tbody id="task-table-body" class="divide-y divide-gray-100">
-                            <!-- Populated by JS -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- ANALYTICS SECTION -->
         <section id="analytics" class="tab-content space-y-8">
             <div class="max-w-3xl">
                 <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Performance Analytics</h1>
@@ -243,32 +241,216 @@
 
     <script>
         // --- DATA PERSISTENCE & STATE ---
-        const LOCAL_STORAGE_KEY = 'applePrepOSData';
+        const LOCAL_STORAGE_KEY = 'applePrepOSData_v2';
         let currentFilterState = 'all';
+        let readinessChartInstance = null;
 
-        // Default skeleton data
+        // The Full 180-Day Apple Backend Curriculum
         const defaultData = {
             domains: [
-                { name: 'Data Structures', current: 35, target: 100, desc: 'Arrays, Trees, DP, Graphs', color: '#0066cc' },
-                { name: 'Java & JVM', current: 60, target: 100, desc: 'Concurrency, GC, Collections', color: '#e53e3e' },
-                { name: 'Spring Boot', current: 40, target: 100, desc: 'Microservices, Security, REST', color: '#38a169' },
-                { name: 'System Design', current: 15, target: 100, desc: 'Scalability, Databases, Caching', color: '#805ad5' },
-                { name: 'Low Level Design', current: 20, target: 100, desc: 'OOP, Design Patterns', color: '#dd6b20' },
-                { name: 'CS Fundamentals', current: 50, target: 100, desc: 'OS, Networking, DBMS', color: '#319795' }
+                { name: 'Data Structures', current: 0, target: 100, desc: 'Arrays, Trees, DP, Graphs', color: '#0066cc' },
+                { name: 'Java & JVM', current: 0, target: 100, desc: 'Concurrency, GC, Collections', color: '#e53e3e' },
+                { name: 'Spring Boot', current: 0, target: 100, desc: 'Microservices, Security, Kafka', color: '#38a169' },
+                { name: 'System Design', current: 0, target: 100, desc: 'Scalability, Databases, Caching', color: '#805ad5' },
+                { name: 'Low Level Design', current: 0, target: 100, desc: 'OOP, Design Patterns', color: '#dd6b20' },
+                { name: 'CS Fundamentals', current: 0, target: 100, desc: 'OS, Networking, DBMS', color: '#319795' }
             ],
             tasks: [
-                { id: 0, day: 43, domain: 'Data Structures', topic: 'Advanced Trees / BST implementation', status: 'completed' },
-                { id: 1, day: 44, domain: 'Java & JVM', topic: 'ReentrantLock & Concurrency', status: 'completed' },
-                { id: 2, day: 45, domain: 'System Design', topic: 'Design Distributed Cache (Redis)', status: 'pending' },
-                { id: 3, day: 46, domain: 'Low Level Design', topic: 'Parking Lot class diagrams', status: 'pending' },
-                { id: 4, day: 47, domain: 'Data Structures', topic: 'Graph Traversal (BFS/DFS)', status: 'pending' },
-                { id: 5, day: 48, domain: 'Behavioral', topic: 'STAR Method: Conflict Resolution', status: 'pending' },
-                { id: 6, day: 49, domain: 'CS Fundamentals', topic: 'ACID Properties & Transactions', status: 'pending' }
+                // PHASE 1: DSA Foundations & Java Core
+                { id: 0, day: 1, domain: 'Data Structures', topic: 'Time & Space Complexity (Big-O) Fundamentals', status: 'pending' },
+                { id: 1, day: 2, domain: 'Data Structures', topic: 'Arrays: Traversal, Insertion, Deletion', status: 'pending' },
+                { id: 2, day: 3, domain: 'Data Structures', topic: 'Arrays: LC Easy (Two Sum, Best Time to Buy/Sell Stock)', status: 'pending' },
+                { id: 3, day: 4, domain: 'Data Structures', topic: 'Hashing: HashMap internal implementation', status: 'pending' },
+                { id: 4, day: 5, domain: 'Java & JVM', topic: 'Java Memory Model: Heap vs Stack, Metaspace', status: 'pending' },
+                { id: 5, day: 6, domain: 'Data Structures', topic: 'Two Pointers: Valid Palindrome, Container With Most Water', status: 'pending' },
+                { id: 6, day: 7, domain: 'Data Structures', topic: 'Two Pointers: 3Sum, Sort Colors', status: 'pending' },
+                { id: 7, day: 8, domain: 'Java & JVM', topic: 'Garbage Collection Algorithms (G1GC, ZGC)', status: 'pending' },
+                { id: 8, day: 9, domain: 'Data Structures', topic: 'Sliding Window: Fixed Size (Max Sum Subarray)', status: 'pending' },
+                { id: 9, day: 10, domain: 'Data Structures', topic: 'Sliding Window: Variable Size (Longest Substring Without Repeating)', status: 'pending' },
+                { id: 10, day: 11, domain: 'CS Fundamentals', topic: 'OS: Threads vs Processes, Context Switching', status: 'pending' },
+                { id: 11, day: 12, domain: 'Data Structures', topic: 'Strings: Valid Anagram, Longest Palindromic Substring', status: 'pending' },
+                { id: 12, day: 13, domain: 'Java & JVM', topic: 'Multithreading Basics: Runnable, Thread, Thread Lifecycle', status: 'pending' },
+                { id: 13, day: 14, domain: 'Data Structures', topic: 'Linked List: Reversal, Cycle Detection', status: 'pending' },
+                { id: 14, day: 15, domain: 'Data Structures', topic: 'Linked List: Merge Two Sorted Lists, Remove Nth Node', status: 'pending' },
+                { id: 15, day: 16, domain: 'Low Level Design', topic: 'OOP Principles: SOLID, Composition vs Inheritance', status: 'pending' },
+                { id: 16, day: 17, domain: 'Data Structures', topic: 'Linked List: LRU Cache Implementation (Crucial)', status: 'pending' },
+                { id: 17, day: 18, domain: 'Java & JVM', topic: 'Synchronization: Locks, Volatile keyword, Deadlocks', status: 'pending' },
+                { id: 18, day: 19, domain: 'Data Structures', topic: 'Stack: Valid Parentheses, Min Stack', status: 'pending' },
+                { id: 19, day: 20, domain: 'Data Structures', topic: 'Stack: Monotonic Stack (Daily Temperatures)', status: 'pending' },
+                { id: 20, day: 21, domain: 'System Design', topic: 'Intro: Client-Server Model, HTTP/REST, DNS', status: 'pending' },
+                { id: 21, day: 22, domain: 'Data Structures', topic: 'Queues & Deques: Implementation using Arrays/Linked Lists', status: 'pending' },
+                { id: 22, day: 23, domain: 'Java & JVM', topic: 'Executors Framework: Thread Pools, Callable, Future', status: 'pending' },
+                { id: 23, day: 24, domain: 'Data Structures', topic: 'Binary Search: Standard Implementation, First/Last Position', status: 'pending' },
+                { id: 24, day: 25, domain: 'Data Structures', topic: 'Binary Search: Search in Rotated Sorted Array, Koko Eating Bananas', status: 'pending' },
+                { id: 25, day: 26, domain: 'CS Fundamentals', topic: 'Networking: TCP/IP Stack, TCP vs UDP', status: 'pending' },
+                { id: 26, day: 27, domain: 'Data Structures', topic: 'Trees: Inorder, Preorder, Postorder Traversal', status: 'pending' },
+                { id: 27, day: 28, domain: 'Data Structures', topic: 'Trees: Maximum Depth, Invert Binary Tree, Same Tree', status: 'pending' },
+                { id: 28, day: 29, domain: 'Java & JVM', topic: 'CompletableFuture & Asynchronous Programming', status: 'pending' },
+                { id: 29, day: 30, domain: 'Data Structures', topic: 'Trees: Diameter of Binary Tree, Balanced Binary Tree', status: 'pending' },
+
+                // PHASE 2: Advanced DSA & System Design Basics
+                { id: 30, day: 31, domain: 'Data Structures', topic: 'Binary Search Tree (BST): Validation, Lowest Common Ancestor', status: 'pending' },
+                { id: 31, day: 32, domain: 'System Design', topic: 'Scalability: Vertical vs Horizontal, Load Balancing', status: 'pending' },
+                { id: 32, day: 33, domain: 'Data Structures', topic: 'Trees: Level Order Traversal (BFS), Right Side View', status: 'pending' },
+                { id: 33, day: 34, domain: 'Data Structures', topic: 'Trees: Construct Binary Tree from Preorder & Inorder', status: 'pending' },
+                { id: 34, day: 35, domain: 'Java & JVM', topic: 'Concurrent Collections: ConcurrentHashMap deep dive', status: 'pending' },
+                { id: 35, day: 36, domain: 'Data Structures', topic: 'Heaps: Priority Queue basics, Kth Largest Element', status: 'pending' },
+                { id: 36, day: 37, domain: 'Data Structures', topic: 'Heaps: Top K Frequent Elements, Merge K Sorted Lists', status: 'pending' },
+                { id: 37, day: 38, domain: 'System Design', topic: 'CAP Theorem & PACELC Theorem', status: 'pending' },
+                { id: 38, day: 39, domain: 'Data Structures', topic: 'Graphs: Adjacency List/Matrix, BFS, DFS', status: 'pending' },
+                { id: 39, day: 40, domain: 'Data Structures', topic: 'Graphs: Number of Islands, Max Area of Island', status: 'pending' },
+                { id: 40, day: 41, domain: 'Low Level Design', topic: 'Design Patterns: Singleton, Factory, Builder', status: 'pending' },
+                { id: 41, day: 42, domain: 'Data Structures', topic: 'Graphs: Clone Graph, Pacific Atlantic Water Flow', status: 'pending' },
+                { id: 42, day: 43, domain: 'Java & JVM', topic: 'Exception Handling: Internal mechanisms, Custom Exceptions', status: 'pending' },
+                { id: 43, day: 44, domain: 'Data Structures', topic: 'Graphs: Topological Sort, Course Schedule I & II', status: 'pending' },
+                { id: 44, day: 45, domain: 'Data Structures', topic: 'Advanced Graphs: Dijkstra’s Algorithm (Network Delay Time)', status: 'pending' },
+                { id: 45, day: 46, domain: 'CS Fundamentals', topic: 'DBMS: Relational vs NoSQL, ACID Properties', status: 'pending' },
+                { id: 46, day: 47, domain: 'System Design', topic: 'Database Sharding, Partitioning, and Replication', status: 'pending' },
+                { id: 47, day: 48, domain: 'Data Structures', topic: 'Trie: Implement Trie (Prefix Tree), Word Dictionary', status: 'pending' },
+                { id: 48, day: 49, domain: 'Data Structures', topic: 'Backtracking: Subsets, Combinations, Permutations', status: 'pending' },
+                { id: 49, day: 50, domain: 'Low Level Design', topic: 'Design Patterns: Strategy, Observer, Decorator', status: 'pending' },
+                { id: 50, day: 51, domain: 'Data Structures', topic: 'Backtracking: Word Search, N-Queens', status: 'pending' },
+                { id: 51, day: 52, domain: 'Java & JVM', topic: 'Java 8+: Streams API, Lambda Expressions internals', status: 'pending' },
+                { id: 52, day: 53, domain: 'Data Structures', topic: '1D Dynamic Programming: Climbing Stairs, House Robber', status: 'pending' },
+                { id: 53, day: 54, domain: 'Data Structures', topic: '1D DP: Coin Change, Word Break', status: 'pending' },
+                { id: 54, day: 55, domain: 'System Design', topic: 'Caching: Redis/Memcached, Write-through vs Write-back', status: 'pending' },
+                { id: 55, day: 56, domain: 'Data Structures', topic: '1D DP: Longest Increasing Subsequence', status: 'pending' },
+                { id: 56, day: 57, domain: 'Data Structures', topic: '2D DP: Unique Paths, Longest Common Subsequence', status: 'pending' },
+                { id: 57, day: 58, domain: 'Spring Boot', topic: 'Microservices architecture vs Monoliths', status: 'pending' },
+                { id: 58, day: 59, domain: 'Data Structures', topic: '2D DP: Edit Distance, Target Sum', status: 'pending' },
+                { id: 59, day: 60, domain: 'CS Fundamentals', topic: 'DBMS: Indexing (B-Trees), Query Optimization', status: 'pending' },
+
+                // PHASE 3: High-Level System Design & LLD
+                { id: 60, day: 61, domain: 'System Design', topic: 'Consistent Hashing: Theory and Implementation', status: 'pending' },
+                { id: 61, day: 62, domain: 'Low Level Design', topic: 'LLD: Parking Lot System (Classes, Interfaces)', status: 'pending' },
+                { id: 62, day: 63, domain: 'Data Structures', topic: 'Greedy: Jump Game, Gas Station', status: 'pending' },
+                { id: 63, day: 64, domain: 'Data Structures', topic: 'Greedy: Merge Intervals, Insert Interval', status: 'pending' },
+                { id: 64, day: 65, domain: 'Spring Boot', topic: 'Security: Deep dive into OAuth2 & OIDC flows', status: 'pending' },
+                { id: 65, day: 66, domain: 'System Design', topic: 'Event-Driven Systems: Message Brokers (Kafka vs RabbitMQ)', status: 'pending' },
+                { id: 66, day: 67, domain: 'Data Structures', topic: 'Bit Manipulation: Number of 1 Bits, Missing Number', status: 'pending' },
+                { id: 67, day: 68, domain: 'Low Level Design', topic: 'LLD: Elevator System Design', status: 'pending' },
+                { id: 68, day: 69, domain: 'System Design', topic: 'Design a URL Shortener (Bitly)', status: 'pending' },
+                { id: 69, day: 70, domain: 'Data Structures', topic: 'Union Find: Redundant Connection', status: 'pending' },
+                { id: 70, day: 71, domain: 'Java & JVM', topic: 'ReentrantLocks, ReadWriteLocks, CountDownLatch', status: 'pending' },
+                { id: 71, day: 72, domain: 'System Design', topic: 'Design WhatsApp / Chat System', status: 'pending' },
+                { id: 72, day: 73, domain: 'Data Structures', topic: 'Mock Assessment: LC Medium Array/String (45 mins)', status: 'pending' },
+                { id: 73, day: 74, domain: 'Low Level Design', topic: 'LLD: Rate Limiter Implementation (Token Bucket)', status: 'pending' },
+                { id: 74, day: 75, domain: 'Spring Boot', topic: 'Multi-tenant database architectures & routing', status: 'pending' },
+                { id: 75, day: 76, domain: 'System Design', topic: 'Design iCloud / Distributed File Storage', status: 'pending' },
+                { id: 76, day: 77, domain: 'Data Structures', topic: 'Mock Assessment: LC Medium Tree/Graph (45 mins)', status: 'pending' },
+                { id: 77, day: 78, domain: 'System Design', topic: 'Design an Event-Driven Notification System (using Kafka)', status: 'pending' },
+                { id: 78, day: 79, domain: 'Low Level Design', topic: 'LLD: Splitwise / Expense Tracker', status: 'pending' },
+                { id: 79, day: 80, domain: 'CS Fundamentals', topic: 'DBMS: Normalization, Isolation Levels, Deadlocks', status: 'pending' },
+                { id: 80, day: 81, domain: 'System Design', topic: 'Design Uber / Location Based Services', status: 'pending' },
+                { id: 81, day: 82, domain: 'Data Structures', topic: 'Mock Assessment: LC Medium DP/Greedy (45 mins)', status: 'pending' },
+                { id: 82, day: 83, domain: 'System Design', topic: 'Design Apple Music / Audio Streaming System', status: 'pending' },
+                { id: 83, day: 84, domain: 'Low Level Design', topic: 'LLD: Vending Machine (State Pattern)', status: 'pending' },
+                { id: 84, day: 85, domain: 'Spring Boot', topic: 'Kubernetes Basics: Pods, Services, Deployments', status: 'pending' },
+                { id: 85, day: 86, domain: 'System Design', topic: 'API Design: GraphQL vs REST vs gRPC', status: 'pending' },
+                { id: 86, day: 87, domain: 'Data Structures', topic: 'Revision: Top 10 Arrays & String Patterns', status: 'pending' },
+                { id: 87, day: 88, domain: 'System Design', topic: 'Design Ticketmaster / BookMyShow (Concurrency handling)', status: 'pending' },
+                { id: 88, day: 89, domain: 'Low Level Design', topic: 'LLD: Snake and Ladder Game', status: 'pending' },
+                { id: 89, day: 90, domain: 'Spring Boot', topic: 'Data Privacy: GDPR compliance, Audit Logging strategies', status: 'pending' },
+
+                // PHASE 4: Hard DSA, Cloud Infrastructure & Polishing
+                { id: 90, day: 91, domain: 'System Design', topic: 'Content Delivery Networks (CDNs) & Video Streaming', status: 'pending' },
+                { id: 91, day: 92, domain: 'Data Structures', topic: 'Revision: Linked Lists & Pointers Hard variations', status: 'pending' },
+                { id: 92, day: 93, domain: 'System Design', topic: 'Apply AWS Architecting concepts to Apple-scale services', status: 'pending' },
+                { id: 93, day: 94, domain: 'Data Structures', topic: 'Hard DP: Burst Balloons, Regular Expression Matching', status: 'pending' },
+                { id: 94, day: 95, domain: 'Java & JVM', topic: 'ThreadLocal, Volatile, & Happens-Before Guarantee', status: 'pending' },
+                { id: 95, day: 96, domain: 'System Design', topic: 'Rate Limiting Algorithms at scale (Redis/Lua)', status: 'pending' },
+                { id: 96, day: 97, domain: 'Data Structures', topic: 'Hard Graphs: Word Ladder, Alien Dictionary', status: 'pending' },
+                { id: 97, day: 98, domain: 'Low Level Design', topic: 'LLD: Cache Framework with Eviction Policies (LRU/LFU)', status: 'pending' },
+                { id: 98, day: 99, domain: 'Spring Boot', topic: 'Kafka Deep Dive: Consumer Groups, Partitions, Offsets', status: 'pending' },
+                { id: 99, day: 100, domain: 'System Design', topic: 'Design Instagram / News Feed System', status: 'pending' },
+                { id: 100, day: 101, domain: 'Data Structures', topic: 'Advanced Data Structures: Segment Trees basics', status: 'pending' },
+                { id: 101, day: 102, domain: 'CS Fundamentals', topic: 'OS: Virtual Memory, Paging, Thrashing', status: 'pending' },
+                { id: 102, day: 103, domain: 'System Design', topic: 'Design a Web Crawler', status: 'pending' },
+                { id: 103, day: 104, domain: 'Data Structures', topic: 'Revision: Tree Traversals & LCA', status: 'pending' },
+                { id: 104, day: 105, domain: 'Low Level Design', topic: 'LLD: Library Management System', status: 'pending' },
+                { id: 105, day: 106, domain: 'Spring Boot', topic: 'API Gateway Pattern & Service Discovery', status: 'pending' },
+                { id: 106, day: 107, domain: 'System Design', topic: 'Distributed Logging and Tracing (ELK, Zipkin)', status: 'pending' },
+                { id: 107, day: 108, domain: 'Data Structures', topic: 'Revision: Backtracking & Graph Traversal', status: 'pending' },
+                { id: 108, day: 109, domain: 'Low Level Design', topic: 'LLD: ATM Machine Design', status: 'pending' },
+                { id: 109, day: 110, domain: 'System Design', topic: 'Design Typeahead Suggestion (Search Autocomplete)', status: 'pending' },
+                { id: 110, day: 111, domain: 'Data Structures', topic: 'Revision: 1D and 2D Dynamic Programming', status: 'pending' },
+                { id: 111, day: 112, domain: 'Java & JVM', topic: 'Performance Tuning: Profiling, Memory Leaks, Heap Dumps', status: 'pending' },
+                { id: 112, day: 113, domain: 'System Design', topic: 'Design Distributed Unique ID Generator', status: 'pending' },
+                { id: 113, day: 114, domain: 'Data Structures', topic: 'Mock Assessment: 2 LC Mediums (45 mins)', status: 'pending' },
+                { id: 114, day: 115, domain: 'Behavioral', topic: 'Drafting impact stories (Multi-tenant systems, Kafka, Security)', status: 'pending' },
+                { id: 115, day: 116, domain: 'Spring Boot', topic: 'Resilience: Circuit Breakers, Retries, Timeouts', status: 'pending' },
+                { id: 116, day: 117, domain: 'System Design', topic: 'Design a Key-Value Store (DynamoDB concepts)', status: 'pending' },
+                { id: 117, day: 118, domain: 'Data Structures', topic: 'Mock Assessment: 1 LC Hard (45 mins)', status: 'pending' },
+                { id: 118, day: 119, domain: 'CS Fundamentals', topic: 'Networking: HTTPS, TLS/SSL Handshake', status: 'pending' },
+                { id: 119, day: 120, domain: 'Low Level Design', topic: 'LLD: Online Stock Broker System', status: 'pending' },
+
+                // PHASE 5: Intensive Mock Interviews & Revision
+                { id: 120, day: 121, domain: 'Data Structures', topic: 'Blind 75 / NeetCode 150: Arrays & Hashing Review', status: 'pending' },
+                { id: 121, day: 122, domain: 'System Design', topic: 'Mock Interview: High Level System Design', status: 'pending' },
+                { id: 122, day: 123, domain: 'Data Structures', topic: 'Blind 75 / NeetCode 150: Pointers & Sliding Window Review', status: 'pending' },
+                { id: 123, day: 124, domain: 'Low Level Design', topic: 'Mock Interview: Low Level Design / Machine Coding', status: 'pending' },
+                { id: 124, day: 125, domain: 'Java & JVM', topic: 'Core Java Review: Streams, Multithreading, Memory', status: 'pending' },
+                { id: 125, day: 126, domain: 'Data Structures', topic: 'Blind 75 / NeetCode 150: Stack & Binary Search Review', status: 'pending' },
+                { id: 126, day: 127, domain: 'System Design', topic: 'Review System Design Weaknesses (Caching, DB replication)', status: 'pending' },
+                { id: 127, day: 128, domain: 'Data Structures', topic: 'Blind 75 / NeetCode 150: Trees & Tries Review', status: 'pending' },
+                { id: 128, day: 129, domain: 'Behavioral', topic: 'Apple Core Values: Ownership, Innovation, Secrecy', status: 'pending' },
+                { id: 129, day: 130, domain: 'Spring Boot', topic: 'Review Platform Engineering overlaps with Cloud Infra', status: 'pending' },
+                { id: 130, day: 131, domain: 'Data Structures', topic: 'Blind 75 / NeetCode 150: Graphs & Advanced Graphs Review', status: 'pending' },
+                { id: 131, day: 132, domain: 'CS Fundamentals', topic: 'Review OS & DBMS concurrency issues', status: 'pending' },
+                { id: 132, day: 133, domain: 'Data Structures', topic: 'Blind 75 / NeetCode 150: 1D & 2D DP Review', status: 'pending' },
+                { id: 133, day: 134, domain: 'System Design', topic: 'Mock Interview: High Level System Design', status: 'pending' },
+                { id: 134, day: 135, domain: 'Data Structures', topic: 'Blind 75 / NeetCode 150: Greedy & Backtracking Review', status: 'pending' },
+                { id: 135, day: 136, domain: 'Low Level Design', topic: 'Mock Interview: Low Level Design', status: 'pending' },
+                { id: 136, day: 137, domain: 'Behavioral', topic: 'STAR Method: Handling failure and resolving conflicts', status: 'pending' },
+                { id: 137, day: 138, domain: 'Data Structures', topic: 'Mock Assessment: Full 90 Min Coding Interview', status: 'pending' },
+                { id: 138, day: 139, domain: 'System Design', topic: 'Design Document/Whiteboard practice (Communication)', status: 'pending' },
+                { id: 139, day: 140, domain: 'Java & JVM', topic: 'Concurrency Code Implementation Mock (Producer/Consumer)', status: 'pending' },
+                { id: 140, day: 141, domain: 'Data Structures', topic: 'Weak Area Targeted Practice', status: 'pending' },
+                { id: 141, day: 142, domain: 'System Design', topic: 'Weak Area Targeted Practice (Scalability, Messaging)', status: 'pending' },
+                { id: 142, day: 143, domain: 'Data Structures', topic: 'Weak Area Targeted Practice', status: 'pending' },
+                { id: 143, day: 144, domain: 'Low Level Design', topic: 'Weak Area Targeted Practice (Design Patterns in Java)', status: 'pending' },
+                { id: 144, day: 145, domain: 'Behavioral', topic: 'Mock HR Interview (Cross-functional collaboration)', status: 'pending' },
+                { id: 145, day: 146, domain: 'Data Structures', topic: 'Apple Specific LC Tagged Problems - Easy', status: 'pending' },
+                { id: 146, day: 147, domain: 'Data Structures', topic: 'Apple Specific LC Tagged Problems - Medium', status: 'pending' },
+                { id: 147, day: 148, domain: 'Data Structures', topic: 'Apple Specific LC Tagged Problems - Medium/Hard', status: 'pending' },
+                { id: 148, day: 149, domain: 'System Design', topic: 'Review major Apple products architecture constraints', status: 'pending' },
+                { id: 149, day: 150, domain: 'Data Structures', topic: 'Apple Specific LC Tagged Problems - Hard', status: 'pending' },
+                { id: 150, day: 151, domain: 'Java & JVM', topic: 'Deep dive edge cases in GC and Memory Leaks', status: 'pending' },
+                { id: 151, day: 152, domain: 'CS Fundamentals', topic: 'Final Review: Networking, OS, and Database internals', status: 'pending' },
+                { id: 152, day: 153, domain: 'Data Structures', topic: 'Mock Assessment: 45 Mins Coding', status: 'pending' },
+                { id: 153, day: 154, domain: 'System Design', topic: 'Mock Assessment: 45 Mins System Design', status: 'pending' },
+                { id: 154, day: 155, domain: 'Low Level Design', topic: 'Mock Assessment: 45 Mins Object Oriented Design', status: 'pending' },
+                { id: 155, day: 156, domain: 'Data Structures', topic: 'Mock Assessment: 45 Mins Coding', status: 'pending' },
+                { id: 156, day: 157, domain: 'Behavioral', topic: 'Final Review of Resume and STAR stories', status: 'pending' },
+                { id: 157, day: 158, domain: 'Data Structures', topic: 'Rest & light review of formula/patterns', status: 'pending' },
+                { id: 158, day: 159, domain: 'System Design', topic: 'Rest & light review of architecture diagrams', status: 'pending' },
+                { id: 159, day: 160, domain: 'Behavioral', topic: 'Mental Prep, Environment Setup, Final Strategy check', status: 'pending' },
+                
+                // Days 161-180 are buffer days
+                { id: 160, day: 161, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 161, day: 162, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 162, day: 163, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 163, day: 164, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 164, day: 165, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 165, day: 166, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 166, day: 167, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 167, day: 168, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 168, day: 169, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 169, day: 170, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 170, day: 171, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 171, day: 172, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 172, day: 173, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 173, day: 174, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 174, day: 175, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 175, day: 176, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 176, day: 177, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 177, day: 178, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 178, day: 179, domain: 'Buffer', topic: 'Catch-up day / Overflow practice', status: 'pending' },
+                { id: 179, day: 180, domain: 'Buffer', topic: 'Final Day - Relax and Prepare for Interviews', status: 'pending' }
             ],
             mockScores: [4.5, 5.0, 5.5, 5.2, 6.5, 6.8]
         };
 
-        // Load from storage or use defaults
         let appData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || defaultData;
 
         function saveData() {
@@ -276,7 +458,6 @@
             updateKPIs();
         }
 
-        // Hard reset for the user if they want to start fresh
         window.resetData = function() {
             if(confirm("Are you sure you want to wipe all local progress? This cannot be undone.")) {
                 localStorage.removeItem(LOCAL_STORAGE_KEY);
@@ -284,37 +465,21 @@
             }
         }
 
-        // --- UTILITY FUNCTIONS ---
+        // --- UTILITY ---
         function wrapLabel(label) {
             if (label.length <= 16) return label;
-            const words = label.split(' ');
-            const lines = [];
-            let currentLine = '';
+            const words = label.split(' '); const lines = []; let currentLine = '';
             words.forEach(word => {
-                if ((currentLine + word).length > 16) {
-                    if (currentLine.trim() !== '') lines.push(currentLine.trim());
-                    currentLine = word + ' ';
-                } else {
-                    currentLine += word + ' ';
-                }
+                if ((currentLine + word).length > 16) { if (currentLine.trim() !== '') lines.push(currentLine.trim()); currentLine = word + ' '; } 
+                else { currentLine += word + ' '; }
             });
             if (currentLine.trim() !== '') lines.push(currentLine.trim());
             return lines;
         }
 
         const standardTooltipConfig = {
-            callbacks: {
-                title: function(tooltipItems) {
-                    const item = tooltipItems[0];
-                    let label = item.chart.data.labels[item.dataIndex];
-                    return Array.isArray(label) ? label.join(' ') : label;
-                }
-            },
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            titleColor: '#2d3748',
-            bodyColor: '#4a5568',
-            borderColor: '#edf2f7',
-            borderWidth: 1, padding: 10, boxPadding: 4, usePointStyle: true
+            callbacks: { title: function(tooltipItems) { const item = tooltipItems[0]; let label = item.chart.data.labels[item.dataIndex]; return Array.isArray(label) ? label.join(' ') : label; } },
+            backgroundColor: 'rgba(255, 255, 255, 0.95)', titleColor: '#2d3748', bodyColor: '#4a5568', borderColor: '#edf2f7', borderWidth: 1, padding: 10, boxPadding: 4, usePointStyle: true
         };
 
         Chart.defaults.font.family = "'Inter', sans-serif";
@@ -325,16 +490,10 @@
         function renderNavigation() {
             const tabs = document.querySelectorAll('.tab-btn');
             const contents = document.querySelectorAll('.tab-content');
-
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
-                    tabs.forEach(t => {
-                        t.classList.remove('bg-blue-50', 'text-blue-700');
-                        t.classList.add('text-gray-500');
-                    });
-                    tab.classList.remove('text-gray-500');
-                    tab.classList.add('bg-blue-50', 'text-blue-700');
-
+                    tabs.forEach(t => { t.classList.remove('bg-blue-50', 'text-blue-700'); t.classList.add('text-gray-500'); });
+                    tab.classList.remove('text-gray-500'); tab.classList.add('bg-blue-50', 'text-blue-700');
                     const targetId = tab.getAttribute('data-target');
                     contents.forEach(c => c.classList.remove('active'));
                     document.getElementById(targetId).classList.add('active');
@@ -344,25 +503,69 @@
 
         function updateKPIs() {
             const completedCount = appData.tasks.filter(t => t.status === 'completed').length;
+            const totalTasks = appData.tasks.length;
+            const percent = Math.round((completedCount / totalTasks) * 100);
+            
+            // Calculate Current Day (First pending task, or 180 if all done)
+            const nextTask = appData.tasks.find(t => t.status === 'pending');
+            const currentDay = nextTask ? nextTask.day : totalTasks;
+
             document.getElementById('kpi-tasks').innerText = completedCount;
+            document.getElementById('kpi-day').innerHTML = `Day ${currentDay}<span class="text-lg text-gray-400 font-normal">/${totalTasks}</span>`;
+            document.getElementById('kpi-percent').innerText = `${percent}% of Plan`;
+
+            if(readinessChartInstance) {
+                readinessChartInstance.data.datasets[0].data = [percent, 100 - percent];
+                readinessChartInstance.update();
+            }
+        }
+
+        // NEW: Day-by-Day Current Focus Renderer
+        function renderTodayFocus() {
+            const container = document.getElementById('todays-focus-container');
+            const nextTask = appData.tasks.find(t => t.status === 'pending');
+
+            if (!nextTask) {
+                container.innerHTML = `
+                    <div class="bg-gradient-to-r from-green-400 to-green-600 rounded-2xl p-6 md:p-8 text-white shadow-xl">
+                        <h2 class="text-2xl font-bold mb-2">🎉 All Tasks Completed!</h2>
+                        <p class="text-green-50">You have finished the entire 180-day curriculum. You are ready for Apple!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-8 -mr-8 w-48 h-48 bg-white opacity-10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div class="flex-grow">
+                            <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-bold tracking-wider uppercase mb-3 text-blue-50">Current Focus • Day ${nextTask.day}</span>
+                            <h2 class="text-2xl md:text-3xl font-bold mb-2 leading-tight">${nextTask.topic}</h2>
+                            <p class="text-blue-100 font-medium text-sm flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-green-400"></span> ${nextTask.domain}
+                            </p>
+                        </div>
+                        <button onclick="toggleTask(${nextTask.id})" class="whitespace-nowrap w-full md:w-auto px-8 py-4 bg-white text-blue-700 hover:bg-blue-50 font-bold rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 text-lg">
+                            &#10003; Mark as Done
+                        </button>
+                    </div>
+                </div>
+            `;
         }
 
         function renderOverviewCharts() {
             const ctxReadiness = document.getElementById('readinessChart').getContext('2d');
-            new Chart(ctxReadiness, {
+            const completedCount = appData.tasks.filter(t => t.status === 'completed').length;
+            const percent = Math.round((completedCount / appData.tasks.length) * 100);
+
+            readinessChartInstance = new Chart(ctxReadiness, {
                 type: 'doughnut',
                 data: {
                     labels: ['Completed Curriculum', 'Remaining Curriculum'],
-                    datasets: [{
-                        data: [28, 72],
-                        backgroundColor: ['#0066cc', '#edf2f7'],
-                        borderWidth: 0, hoverOffset: 4
-                    }]
+                    datasets: [{ data: [percent, 100 - percent], backgroundColor: ['#0066cc', '#edf2f7'], borderWidth: 0, hoverOffset: 4 }]
                 },
-                options: {
-                    responsive: true, maintainAspectRatio: false, cutout: '75%',
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true } }, tooltip: standardTooltipConfig }
-                }
+                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true } }, tooltip: standardTooltipConfig } }
             });
 
             const ctxRadar = document.getElementById('radarChart').getContext('2d');
@@ -376,16 +579,22 @@
                         { label: 'Target Requirement', data: [9, 8, 8, 7, 8, 8], backgroundColor: 'transparent', borderColor: '#cbd5e0', borderDash: [5, 5], borderWidth: 2, pointBackgroundColor: '#cbd5e0', pointRadius: 0 }
                     ]
                 },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: { r: { min: 0, max: 10, ticks: { display: false }, pointLabels: { font: { size: 10, weight: 600 }, color: '#4a5568' } } },
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true } }, tooltip: standardTooltipConfig }
-                }
+                options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 10, ticks: { display: false }, pointLabels: { font: { size: 10, weight: 600 }, color: '#4a5568' } } }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true } }, tooltip: standardTooltipConfig } }
             });
         }
 
         function renderCurriculumCharts() {
             const ctxDomain = document.getElementById('domainBarChart').getContext('2d');
+            
+            // Calculate dynamic domain progress
+            appData.domains.forEach(d => {
+                const domainTasks = appData.tasks.filter(t => t.domain === d.name);
+                if(domainTasks.length > 0) {
+                    const completed = domainTasks.filter(t => t.status === 'completed').length;
+                    d.current = Math.round((completed / domainTasks.length) * 100);
+                }
+            });
+
             const labels = appData.domains.map(d => wrapLabel(d.name));
             const data = appData.domains.map(d => d.current);
             const colors = appData.domains.map(d => d.color);
@@ -393,11 +602,7 @@
             new Chart(ctxDomain, {
                 type: 'bar',
                 data: { labels: labels, datasets: [{ label: 'Completion %', data: data, backgroundColor: colors, borderRadius: 4, barPercentage: 0.6 }] },
-                options: {
-                    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
-                    plugins: { legend: { display: false }, tooltip: standardTooltipConfig },
-                    scales: { x: { max: 100, ticks: { callback: v => v + '%' }, grid: { display: false } }, y: { grid: { display: false }, ticks: { font: { weight: 500, size: 12 }, color: '#2d3748' } } }
-                }
+                options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false }, tooltip: standardTooltipConfig }, scales: { x: { max: 100, ticks: { callback: v => v + '%' }, grid: { display: false } }, y: { grid: { display: false }, ticks: { font: { weight: 500, size: 12 }, color: '#2d3748' } } } }
             });
 
             const container = document.getElementById('domain-cards-container');
@@ -411,21 +616,21 @@
                         </div>
                         <p class="text-xs text-gray-500">${d.desc}</p>
                         <div class="w-full bg-gray-100 h-1.5 rounded-full mt-3 overflow-hidden">
-                            <div class="h-full rounded-full" style="width: ${d.current}%; background-color: ${d.color};"></div>
+                            <div class="h-full rounded-full transition-all duration-500" style="width: ${d.current}%; background-color: ${d.color};"></div>
                         </div>
                     </div>
                 `;
             });
         }
 
-        // Interactive Toggle Functionality
         window.toggleTask = function(taskId) {
             const taskIndex = appData.tasks.findIndex(t => t.id === taskId);
             if(taskIndex > -1) {
-                // Toggle status
                 appData.tasks[taskIndex].status = appData.tasks[taskIndex].status === 'completed' ? 'pending' : 'completed';
-                saveData(); // Save to localStorage
-                filterTasks(currentFilterState); // Re-render table dynamically
+                saveData(); 
+                filterTasks(currentFilterState); 
+                renderTodayFocus(); // Update the top card instantly
+                renderCurriculumCharts(); // Update the domain breakdown instantly
             }
         }
 
@@ -483,6 +688,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderNavigation();
             updateKPIs();
+            renderTodayFocus(); // Renders the day-by-day card
             renderOverviewCharts();
             renderCurriculumCharts();
             filterTasks('all');
